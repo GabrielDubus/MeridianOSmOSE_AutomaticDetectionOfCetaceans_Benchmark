@@ -1,0 +1,2 @@
+# MeridianOSmOSE_AutomaticDetectionOfCetaceans_Benchmark
+Benchmark for automatic detection of cetaceans using underwater acoustic recordings
