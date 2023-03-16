@@ -1,4 +1,8 @@
-misc/
+trained_model/
+detections/
+kt-tmp
 
+
+__pycache__
 *.h5
 *.png

@@ -1,0 +1,10 @@
+{"interface": "ResNetInterface",
+    "block_sets":[2,2,2,2],
+    "initial_filters":16,
+    "n_classes":2,
+    "dropout_rate":0,        
+    "optimizer": {"recipe_name":"Adam", "parameters": {"learning_rate":0.001}},
+    "loss_function": {"recipe_name":"FScoreLoss", "parameters":{}},  
+    "metrics": [{"recipe_name": "CategoricalAccuracy", "parameters": {}},
+                {"recipe_name": "Precision", "parameters": {"class_id":1}},
+                {"recipe_name": "Recall", "parameters": {"class_id":1}}]}
