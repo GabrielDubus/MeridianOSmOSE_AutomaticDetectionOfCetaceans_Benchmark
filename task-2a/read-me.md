@@ -32,6 +32,54 @@ pip install -r requirements.txt
 
 To run the code simply issue the commands in your CLI. Ensure you are in the correct working directory.
 
+In the next session we will train a model on the dataset. If you just want to test the code without having to spend a long time training the dataset, please skip to [Running on the sample dataset](#running-on-the-sample-dataset)
+
+# Running on the Full Dataset
+
+## Creating the database
+
+* `config_files/spec_config.json` contains the spectrogram configuration we will be using
+* `config_files/resnet_recipe.json` contains the NN architecture we will be using
+
+First we add the NARW annotations (positives) to the database (make sure NOPPWavFiles/ points to the path you downloaded the train data and annotations_train.csv to the path where you downloaded the annotation file):
+
+
+```
+python -m narw_detector.create_hdf5_db NOPPWavFiles/ config_files/spec_config.json --annotations annotations_train.csv --labels 1=1 --table_name /train --output db.h5
+```
+Next we add the background data (negatives):
+
+```
+python -m narw_detector.create_hdf5_db NOPPWavFiles/ config_files/spec_config.json --random_selections 6357 0 --table_name /train --output db.h5
+```
+## Train a Model
+
+With the database created we can train a NN. Lets use the resnet archictecture defined in the configuration file.
+
+```
+python -m narw_detector.train_model config_files/resnet_recipe.json db.h5 config_files/spec_config.json --train_table /train --epochs 5 --output_dir trained_model/ --model_output narw_detector.kt
+```
+
+## Run the Model
+
+To run the model on a directory with audio files (again make sure test_files/ points to the place where you donwloaded the test files):
+
+```
+python -m narw_detector.run_model trained_model/narw_detector.kt test_files/ --output detections/detections.csv
+```
+
+The detections will be saved on to a csv file in the `detections` folder.
+
+## Evaluate on test data
+
+Finally to test the detections (make sure annotations_test.csv points to the path you saved the test data):
+
+```
+python narw_detector/utils/detector_performance.py detections/detections.csv annotations_test.csv
+```
+
+
+# Running on the sample dataset
 ## Creating the database
 
 * `config_files/spec_config.json` contains the spectrogram configuration we will be using
