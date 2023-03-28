@@ -50,20 +50,20 @@ python -m narw_detector.create_hdf5_db data/train/background/ config_files/spec_
 ```
 
 
-Now, lets create the validation table:
+<!-- Now, lets create the validation table: -->
 
-```
+<!-- ```
 python -m narw_detector.create_hdf5_db data/val/narw/ config_files/spec_config.json --annotations data/val/annotations_val.csv --labels 1=1 --table_name /val --output db.h5
 
 python -m narw_detector.create_hdf5_db data/val/background/ config_files/spec_config.json --random_selections 20 0 --table_name /val --output db.h5
-```
+``` -->
 
 ## Train a Model
 
 With the database created we can train a NN. Lets use the resnet archictecture defined in the configuration file.
 
 ```
-python -m narw_detector.train_model config_files/resnet_recipe.json db.h5 config_files/spec_config.json --train_table /train --val_table /val --epochs 5 --output_dir trained_model/ --model_output narw_detector.kt
+python -m narw_detector.train_model config_files/resnet_recipe.json db.h5 config_files/spec_config.json --train_table /train --epochs 5 --output_dir trained_model/ --model_output narw_detector.kt
 ```
 
 ## Run the Model
