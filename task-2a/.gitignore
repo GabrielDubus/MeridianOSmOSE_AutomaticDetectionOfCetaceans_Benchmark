@@ -1,6 +1,7 @@
 trained_model/
 detections/
 kt-tmp
+annotations/
 
 
 __pycache__

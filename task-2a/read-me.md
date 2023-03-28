@@ -1,16 +1,19 @@
-# Task 2-a 
+# Task 2-a - Detecting North Atlantic right whales in different envirionments
 ## Description
-Automatic detection of NARW vocalizaion using 3 second segments. This will be a binary detector that will classify presense / absense of NARW upcalls.
 
-3 datasets will be made available containing NARW upcalls:
+The goal of this task is to produce a model that is able to detect North Atlantic right whale (NARW) upcalls accross multiple soundscapes with a reasonable performance. The training dataset is a collection of recordings obtained in the Gulf of Maine and the test dataset are recordings collected in the Emerald Basin. The focus of this task is on the data-preparation and training startegies used for producing robust models on different underwater environments.
 
-* DCLDE (large)
-* GSL 
-* EMB 
 
-The developpers will have to train a detector on the DCLDE dataset and test it on the remaining datasets. We want to evaluate models on how well they generalize to unseen data from other regions.
+The models will be evaluated on how well they generalize to unseen data from other regions. The goal will be to maximize precision / recall and minimize the FPR per hour or recording.
 
-The goal will be to maximize precision / recall and minimize the FPR per hour or recording.
+
+Annotations for each soundscape will contain at least the following columns:
+| filename | start | end |
+| ------- | ------ | ---- |
+
+where filename is the name of the file that contains a NARW upcall, start is the start time in seconds where the annotation begins and end is the end time in seconds where the annotation ends.
+
+
 
 # Running the sample code 
 
