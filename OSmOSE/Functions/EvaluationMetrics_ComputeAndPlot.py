@@ -92,7 +92,7 @@ def ComputeEvaluationMetrics(LabelsList, labels, outputs):
             Pp = np.linspace(0,1,Npp)
             
             NormalizedExpectedCost[ite, id_specie,:] = Pp * (FN_rate[ite, id_specie]-FP_rate[ite, id_specie]) + FP_rate[ite, id_specie]
-    return Recall, Precision, FP_rate, TP_rate, FN_rate, NormalizedExpectedCost, Pp
+    return Recall, Precision, FP_rate, TP_rate, FN_rate, NormalizedExpectedCost, Pp, threshold_array
 
 
 def plot_PR_curve(Recall, Precision, savepath = None, color='b', xlim=[0,1], ylim=[0,1], figsize=(4,4)):
@@ -102,6 +102,19 @@ def plot_PR_curve(Recall, Precision, savepath = None, color='b', xlim=[0,1], yli
     plt.ylim(ylim)
     plt.xlabel('Recall')
     plt.ylabel('Precision')
+    #plt.title('Best : P = ' + str(Precision[argbest]) + ' - R = ' + str(Recall[argbest]))
+    plt.grid()
+    plt.tight_layout()
+    if not savepath == 'None':
+        plt.savefig(savepath)
+
+def plot_Fscore_curve(threshold, Fscore, savepath = None, color='b', xlim=[0,1], ylim=[0,1], figsize=(4,4)):
+    plt.figure(figsize=figsize)
+    plt.plot(threshold, Fscore, c=color)
+    plt.xlim(xlim)
+    plt.ylim(ylim)
+    plt.xlabel('Threshold')
+    plt.ylabel('F score')
     #plt.title('Best : P = ' + str(Precision[argbest]) + ' - R = ' + str(Recall[argbest]))
     plt.grid()
     plt.tight_layout()
@@ -120,6 +133,7 @@ def plot_ROC_curve(FP_rate, TP_rate, savepath = None, color='b', xlim=[0,1], yli
     plt.tight_layout()
     if not savepath == 'None':
         plt.savefig(savepath)
+
 
 def plot_DET_curve(FP_rate, FN_rate, savepath = None, color='b', xlim=[0.005,0.8], ylim=[0.005,0.8], figsize=(4,4)):     
     fig = plt.figure(figsize=figsize)

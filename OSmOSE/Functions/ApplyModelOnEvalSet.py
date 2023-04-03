@@ -38,7 +38,7 @@ with open('path_codes.txt') as f:
     codes_path = f.readlines()[0]
 sys.path.append(codes_path)
 from ClasseDatasetForTorch import ClassDataset
-from EvaluationMetrics_ComputeAndPlot import ComputeEvaluationMetrics, plot_PR_curve, plot_ROC_curve, plot_DET_curve, plot_COST_curve
+from EvaluationMetrics_ComputeAndPlot import ComputeEvaluationMetrics, plot_PR_curve, plot_ROC_curve, plot_DET_curve, plot_COST_curve, plot_Fscore_curve
 from Network_Functions import transform_simple, transform
 
 
@@ -153,22 +153,32 @@ def ApplyModelOnEvalSet_main(dataset_ID, Task_ID, BM_Name, LengthFile, Fs, Versi
         outputs[i] = outputs_batch.cpu().detach().numpy()
     
     #%% Compute Evaluation Index
-    Recall, Precision, FP_rate, TP_rate, FN_rate, NormalizedExpectedCost, ProbabilityCost = ComputeEvaluationMetrics(LabelsList, labels, outputs)
+    Recall, Precision, FP_rate, TP_rate, FN_rate, NormalizedExpectedCost, ProbabilityCost, threshold_array = ComputeEvaluationMetrics(LabelsList, labels, outputs)
     
     #%% PLOT PR DET ROC Curve
+
     np.savez(model_path + os.sep + 'train_curves' + os.sep + Version_name + '_EvaluationMetrics_DATA.npz', Recall=Recall, Precision=Precision, FP_rate=FP_rate, TP_rate=TP_rate, FN_rate=FN_rate, NormalizedExpectedCost=NormalizedExpectedCost, ProbabilityCost=ProbabilityCost, LabelsList=LabelsList, labels=labels, outputs=outputs)
     for id_specie in range(len(LabelsList)):
         
         savepath = model_path + os.sep + 'train_curves' + os.sep + str(Version_name) + '_' + str(LabelsList[id_specie]) + '_PRCurves.png'
         plot_PR_curve(Recall[:,id_specie], Precision[:,id_specie], savepath = savepath, color='b', xlim=[0,1], ylim=[0,1], figsize=(4,4))
         
-        savepath = model_path + os.sep + 'train_curves' + os.sep + str(Version_name) + '_' + str(LabelsList[id_specie]) + '_ROCCurves.png'
-        plot_ROC_curve(FP_rate[:,id_specie], TP_rate[:,id_specie], savepath = savepath, color='b', xlim=[0,1], ylim=[0,1], figsize=(4,4))
+        Fscore = 2 * Precision * Recall / (Precision + Recall)
+        savepath = model_path + os.sep + 'train_curves' + os.sep + str(Version_name) + '_' + str(LabelsList[id_specie]) + '_FScoreCurves.png'
+
+        val_optim_arg = np.argmax(Fscore)
+        print('F score maximal : ', str(Fscore[val_optim_arg]))
+        print('Threshold : ', str(threshold_array[val_optim_arg]))
+        print('Precision : ', str(Precision[val_optim_arg]))
+        print('Recall : ',  str(Recall[val_optim_arg]))
+        plot_Fscore_curve(threshold_array, Fscore, savepath = savepath, color='b', xlim=[0,1], ylim=[0,1], figsize=(4,4))
+        #savepath = model_path + os.sep + 'train_curves' + os.sep + str(Version_name) + '_' + str(LabelsList[id_specie]) + '_ROCCurves.png'
+        #plot_ROC_curve(FP_rate[:,id_specie], TP_rate[:,id_specie], savepath = savepath, color='b', xlim=[0,1], ylim=[0,1], figsize=(4,4))
    
-        savepath = model_path + os.sep + 'train_curves' + os.sep + str(Version_name) + '_' + str(LabelsList[id_specie]) + '_DETCurves.png'
-        plot_DET_curve(FP_rate[:,id_specie], FN_rate[:,id_specie], savepath = savepath, color='b', xlim=[0.005,0.8], ylim=[0.005,0.8], figsize=(4,4))
+        #savepath = model_path + os.sep + 'train_curves' + os.sep + str(Version_name) + '_' + str(LabelsList[id_specie]) + '_DETCurves.png'
+        #plot_DET_curve(FP_rate[:,id_specie], FN_rate[:,id_specie], savepath = savepath, color='b', xlim=[0.005,0.8], ylim=[0.005,0.8], figsize=(4,4))
         
-        savepath = model_path + os.sep + 'train_curves' + os.sep + str(Version_name) + '_' + str(LabelsList[id_specie]) + '_CostCurves.png'
-        plot_COST_curve(ProbabilityCost, NormalizedExpectedCost[:,id_specie,:].T, savepath = savepath, color='b', xlim=[0,1], ylim=[0,0.5], figsize=(4,4))
+        #savepath = model_path + os.sep + 'train_curves' + os.sep + str(Version_name) + '_' + str(LabelsList[id_specie]) + '_CostCurves.png'
+        #plot_COST_curve(ProbabilityCost, NormalizedExpectedCost[:,id_specie,:].T, savepath = savepath, color='b', xlim=[0,1], ylim=[0,0.5], figsize=(4,4))
        
         
