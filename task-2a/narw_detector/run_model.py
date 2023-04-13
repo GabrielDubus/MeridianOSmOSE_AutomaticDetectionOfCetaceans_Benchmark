@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-
 import os
 import numpy as np
 import pandas as pd
 from ketos.audio.audio_loader import AudioFrameLoader
-from ketos.neural_networks.dev_utils.detection import merge_overlapping_detections
 from narw_detector.utils.train_model_utils import import_nn_interface, which_nn_interface
 from narw_detector.utils.utils import export, find_files, merge_detections as merge
 from pathlib import Path
@@ -41,7 +39,7 @@ def run_model(model, audio_folder, file_list=None, threshold=0.5, step_size=None
     output.parent.mkdir(parents=True, exist_ok=True)
 
     mode = 'a'
-    if overwrite:
+    if overwrite or not output.exists():
         mode = 'w'
     else:
         # if not overwrite then check the detection file to see if we are resuming from were the processing stopped.
@@ -66,13 +64,13 @@ def run_model(model, audio_folder, file_list=None, threshold=0.5, step_size=None
 
     # Boolean to flag if something was deteted
     detected = False
+    warnings.simplefilter('ignore', category=RuntimeWarning)
     for batch_id in trange(n_batches):
         num_samples = min(batch_size, loader.num() - batch_size * batch_id) 
 
         # batch data will contain tuples (filename, start, duration)
         batch_data = {"filename": [], "start": [], 'end': []}
         data = []
-        warnings.simplefilter('module', RuntimeWarning)
         for _ in range(num_samples):
             spec = next(loader)
             data.append(spec.data.data) 
@@ -101,7 +99,7 @@ def run_model(model, audio_folder, file_list=None, threshold=0.5, step_size=None
         if merge_detections:
             batch_detections = merge(batch_detections)
 
-        if batch_id == 0 and overwrite == False and len(processed_files) > 0:
+        if batch_id == 0 and not overwrite and output.exists() and len(processed_files) > 0:
             # Filtering out all the detections from the last filename
             detected_df = detected_df[detected_df['filename'] != processed_files[-1]].reset_index(drop=True)
             detected_df.to_csv(output, mode='w', index=False, header=True)

@@ -199,4 +199,4 @@ def merge_detections(detection_df):
             merged_detection = {'filename': detections[i]['filename'], 'start': merged_detections[-1]['start'], 'end': detections[i]['end'], 'scores': avg_score}
             merged_detections[-1] = merged_detection #replace     
 
-        return pd.DataFrame(merged_detections)
+    return pd.DataFrame(merged_detections)
