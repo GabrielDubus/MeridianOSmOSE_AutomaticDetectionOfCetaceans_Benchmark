@@ -53,15 +53,13 @@ The final objectives of this benchmark will be to establish a state of the art m
 
 $\begin{equation}
     precision = \dfrac{TP}{TP+FP}, ~~~~ recall = \dfrac{TP}{TP+FN}
-\end{equation}
-$
+\end{equation}$
 
 and, 
 
 $\begin{equation}
     F_1 = 2\dfrac{precision \cdot recall}{precision + recall}
-\end{equation}
-$
+\end{equation}$
 
 The evaluation is made using 27444 samples. Those samples are not available in the unsupervised samples selection. 
 
