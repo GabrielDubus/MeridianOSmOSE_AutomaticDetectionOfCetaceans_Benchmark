@@ -13,7 +13,7 @@ In number of study cases, the number and the quality of annotated sample is limi
 This task proposed to improve the result of automatic detection in a context of limited, but wisely selected the training set.
 
 - The two main exercices will be to :
-    - Select a few subset of the dataset (1500 samples over 25000) through unsupervised method. You are not allowed to use the manual annotation in this part.
+    - Select a few subset of the dataset (1500 samples over 27444) through unsupervised method. You are not allowed to use the manual annotation in this part.
     - Once the selection is done, you can use the annotation to train an automatic detection methods for the vocalization of pygmy blue whales. Considering the small number of samples available in the training set, this part is close from to literature of few-shot learning. 
 
 
@@ -25,7 +25,7 @@ The final objectives of this benchmark will be to establish a state of the art m
 
 
 ### 2.1 Unsupervised Samples selection : 
-- Proposed a selection of 1500 50-seconds samples over 25000 through unsupervised methods.
+- Proposed a selection of 1500 50-seconds samples over 27444 through unsupervised methods.
 - This selection is done **without** information about the labels.
 - The main goal here is to find the most useful samples to use as development set.  
 
@@ -63,28 +63,38 @@ $\begin{equation}
 \end{equation}
 $
 
-The evaluation is made using 25000 samples. Those samples are not available in the unsupervised samples selection. 
+The evaluation is made using 27444 samples. Those samples are not available in the unsupervised samples selection. 
 
 ## 4. More information about the dataset 
-Link to the dataset : ....
 
 Dataset informations [2] : 
 - Location : Amsterdam and Saint-Paul Island
 - Recording period : from February 28th 2018 to April 5th 2018 
 - Recording device : HT192 WB hydrophone mounted on a SeaExplorer underwater glider
-- Sampling Rate : 240Hz
-- Sound event annotated : Pygmy Blue Whale Vocalization
+- Sampling Rate : 250Hz
+- Sound event annotated : South Eastern Indian Ocean Pygmy Blue Whale Vocalizations
+- Total number of 50-senconds samples : 54888 (1500 from 27444 for unsupervised selection and train ; 27444 for evaulation)
+
+- Data availibility : https://www.dropbox.com/scl/fi/f2pdzta5nkutr7fvtoglt/datachallenge_task2_dataset.rar?rlkey=4nfblkuu6ejzmw2xxkdln1c0x&dl=0
+    - 27444 50-seconds wave files for unsupervised selection and train
+    - timestamp.csv containing timstamp for each file
 
 
-## 4. Bechmark methods :
+## 4. Baseline method :
 
+### Data Preprocessing :
+Aigh-pass filter set at 5 Hz was applyed. The, the audio was subsequently normalized using the energy calculated over a 1-hour window centered around the sample. Power spectrograms were then computed for each 50-second segment with an analysis window of 512 samples, equivalent to approximately 2.01 seconds, employing Hanning's window, and overlapped by 471 bins, corresponding to 1.89 seconds. The time and frequency resolutions of these spectrograms were 12 ms and 0.5 Hz, respectively, resulting in a 2D matrix with dimensions of 270 by 256. Finally, each spectrogram was displayed in decibels (dB) and subjected to thresholding within the range of -20 dB to +20 dB to optimize the frequency representation.
 ### Samples selection : Random selection 
 ### Model Development : 
 - 2 Models used :
-    - ResNet18 [3]
-    - Small 3CNN+3FC network 
+    - ResNet18 [3] (11177025 parameters)
+    - Small 3CNN+3FC network (374337 parameters)
 
-![Alt text](Network_Schema.png?raw=true "Test")
+![Alt text](network_schema.png?raw=true "Test")
+
+
+### Results :
+Five differents selection were realized. Each of them was used to train both of the selected network (Simple CNN and ResNet18).
 
 
 ### Apply benchmark model on validation set :
@@ -92,7 +102,12 @@ Dataset informations [2] :
 - You needs to change the files path_codes.txt with the absolute path of the codes
 - You needs to change the files path_osmose_dataset.txt with the absolute path of the location of the dataset folder
 
-- Results :
+- Results : 
+    - Simple CNN : $F_1 = 0.79 \pm 0.01$
+    - ResNet18 : $F_1 = 0.77 \pm 0.02$
+
+PR and ROC curves :
+![Alt text](curves_results.png?raw=true "Test")
 
 
 ## 4. References :
