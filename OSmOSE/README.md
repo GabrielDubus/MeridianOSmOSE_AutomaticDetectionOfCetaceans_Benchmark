@@ -91,12 +91,6 @@ Aigh-pass filter set at 5 Hz was applyed. The, the audio was subsequently normal
 ### Results :
 Five differents selection were realized. Each of them was used to train both of the selected network (Simple CNN and ResNet18).
 
-
-### Apply benchmark model on validation set :
-
-- You needs to change the files path_codes.txt with the absolute path of the codes
-- You needs to change the files path_osmose_dataset.txt with the absolute path of the location of the dataset folder
-
 - Results : 
     - Simple CNN : $F_1 = 0.79 \pm 0.01$
     - ResNet18 : $F_1 = 0.77 \pm 0.02$
